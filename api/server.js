@@ -7,6 +7,7 @@ const server = express();
 server.use(express.json());
 
 // When the client makes a POST request to /api/users:
+// httpie test: http post localhost:9000/api/users name="kim" bio="my bio"
 server.post('/api/users', (req, res) => {
     let body = req.body;
     if(!body.name)  {
@@ -25,6 +26,16 @@ server.post('/api/users', (req, res) => {
 });
 
 // When the client makes a GET request to /api/users:
+// httpie test: http get localhost:9000/api/users
+server.get('/api/users', (req, res) => {
+    model.find()
+        .then(users => {
+            res.json(users);
+        })
+        .catch(() => {
+            res.status(500).json({ message: "The users information could not be retrieved" });
+        })
+})
 
 // When the client makes a GET request to /api/users/:id:
 
