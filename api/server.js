@@ -38,6 +38,21 @@ server.get('/api/users', (req, res) => {
 })
 
 // When the client makes a GET request to /api/users/:id:
+server.get('/api/users/:id', (req, res) => {
+    let { id } = req.params;
+    model.findById(id)
+        .then(user => {
+            console.log(user);
+            if(user == null) {
+                res.status(404).json({ message: "The user with the specified ID does not exist" });
+            } else {
+                res.json(user);
+            }
+        })
+        .catch(() => {
+            res.status(500).json({ message: "The user information could not be retrieved" });
+        })
+})
 
 // When the client makes a DELETE request to /api/users/:id:
 
