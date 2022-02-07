@@ -55,6 +55,7 @@ server.get('/api/users/:id', (req, res) => {
 })
 
 // When the client makes a DELETE request to /api/users/:id:
+// httpie test: http delete localhost:9000/api/users/:id
 server.delete('/api/users/:id', (req, res) => {
     let { id } = req.params;
     model.remove(id)
@@ -71,5 +72,28 @@ server.delete('/api/users/:id', (req, res) => {
 })
 
 // When the client makes a PUT request to /api/users/:id:
+// httpie test: http put localhost:9000/api/users/k6Ci3 bio="super mom" name="kim nguyen"
+server.put('/api/users/:id', async (req, res) => {
+    let {id} = req.params;
+    try {
+        let user = await model.findById(id);
+        if(user == null) {
+            res.status(404).json({ message: "The user with the specified ID does not exist" });
+            return;
+        }
+        let body = req.body;
+        if(!body.name)  {
+            res.status(400).json({ message: "Please provide name and bio for the user" });
+        } else if(!body.bio) {
+            res.status(400).json({ message: "Please provide name and bio for the user" });
+        } else {
+            let newUser = await model.update(id, body);
+            res.status(200).json(newUser);
+    }
+    } catch(e) {
+        res.status(500).json({ message: "The user information could not be modified" });
+    }
+})
+
 
 module.exports = server; // EXPORT YOUR SERVER instead of {}
