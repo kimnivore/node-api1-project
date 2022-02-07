@@ -38,11 +38,11 @@ server.get('/api/users', (req, res) => {
 })
 
 // When the client makes a GET request to /api/users/:id:
+// httpie test: http get localhost:9000/api/users/:id
 server.get('/api/users/:id', (req, res) => {
     let { id } = req.params;
     model.findById(id)
         .then(user => {
-            console.log(user);
             if(user == null) {
                 res.status(404).json({ message: "The user with the specified ID does not exist" });
             } else {
@@ -55,6 +55,20 @@ server.get('/api/users/:id', (req, res) => {
 })
 
 // When the client makes a DELETE request to /api/users/:id:
+server.delete('/api/users/:id', (req, res) => {
+    let { id } = req.params;
+    model.remove(id)
+        .then(user => {
+            if(user == null) {
+                res.status(404).json({ message: "The user with the specified ID does not exist" });
+                return;
+            } 
+                res.status(200).json(user);
+        })
+        .catch(() => {
+            res.status(500).json({ message: "The user could not be removed" });
+        })
+})
 
 // When the client makes a PUT request to /api/users/:id:
 
